@@ -2,6 +2,7 @@
 
 - [Mork partial test](#test-mock-partial)
 - [Test old()](#test-old-helper)
+- [Avoid unnecessary work when querying relationships](#unnecessary-work-when-querying-relationship)
 
 
 ## Test mock partial
@@ -50,4 +51,5 @@ The spy doesn't try to mock out the Request class, it just monitors calls into i
 
 With this test, I'm confident that my Blade component constructor was properly considering old form input, but I don't have to set up a bunch of session data to prove it.
 
+## Unnecessary work when querying relationships
 
