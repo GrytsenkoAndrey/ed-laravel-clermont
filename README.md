@@ -53,3 +53,68 @@ With this test, I'm confident that my Blade component constructor was properly c
 
 ## Unnecessary work when querying relationships
 
+I was working in a controller that was queried by a bunch of receipt printers looking for pending jobs.
+
+The goal was to improve reliability and performance. I saw some code that was looking to see if there was a pending job:
+
+![image](https://github.com/GrytsenkoAndrey/ed-laravel-clermont/assets/63291871/18bdba8b-d3c7-4f37-b736-35f11936154e)
+
+The $pendingJob was only being used as a boolean. The actual model was never used for anything.
+
+At first, I was going to do this:
+
+![image](https://github.com/GrytsenkoAndrey/ed-laravel-clermont/assets/63291871/3c634b4a-e6c8-4c86-948a-4ab7d7af2a8c)
+
+This has a bug though, since the printJobs property is a collection, and there is no exists() method on a collection.
+
+So then my next thought was to do this:
+
+![image](https://github.com/GrytsenkoAndrey/ed-laravel-clermont/assets/63291871/15cc6e22-552b-49ed-8255-5c48843c9b19)
+
+It is true that isNotEmpty works on a collection, and has the same basic meaning as exists, but this is not good code.
+
+Why? If the whole point was to avoid loading and then not using print jobs, I have made absolutely no progress on that goal. I've basically changed nothing about the query.
+
+The SQL query run in both cases looks something like this:
+
+![image](https://github.com/GrytsenkoAndrey/ed-laravel-clermont/assets/63291871/35607dae-b5d0-468b-9dda-0afc8ce53e51)
+
+Notice how we're still querying for all the print jobs, and then Eloquent will hydrate each one of these rows into a model. All of that takes time and memory.
+
+A much better solution is to add a filter to the relationship method:
+
+![image](https://github.com/GrytsenkoAndrey/ed-laravel-clermont/assets/63291871/a3acfb8d-8f2b-42bf-b2e6-2f0c4b0d4e9f)
+
+Notice how I'm now using the relationship method instead of the property, so it runs a much more efficient query.
+
+Now the SQL query looks something like this:
+
+![image](https://github.com/GrytsenkoAndrey/ed-laravel-clermont/assets/63291871/31ef3cfb-18f5-4ac4-9234-a97e90d02391)
+
+So instead of returning all the rows from the database and unnecessarily hydrating models, my query returns a single row with a single boolean value.
+
+This might seem like a small thing, but in my case the code was in an endpoint getting polled every couple seconds by a fleet of printers, so this small improvement actually had a significant impact.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
