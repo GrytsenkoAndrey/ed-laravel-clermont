@@ -2,7 +2,7 @@
 
 - [Mork partial test](#test-mock-partial)
 - [Test old()](#test-old-helper)
-- [Avoid unnecessary work when querying relationships](#unnecessary-work-when-querying-relationship)
+- [Avoid unnecessary work when querying relationships](#unnecessary-work-when-querying-relationships)
 
 
 ## Test mock partial
