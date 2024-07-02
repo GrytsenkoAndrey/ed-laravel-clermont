@@ -3,6 +3,7 @@
 - [Mork partial test](#test-mock-partial)
 - [Test old()](#test-old-helper)
 - [Avoid unnecessary work when querying relationships](#unnecessary-work-when-querying-relationships)
+- [Generating slugs in factories](#generating-slugs-in-factories)
 
 
 ## Test mock partial
@@ -95,10 +96,25 @@ So instead of returning all the rows from the database and unnecessarily hydrati
 
 This might seem like a small thing, but in my case the code was in an endpoint getting polled every couple seconds by a fleet of printers, so this small improvement actually had a significant impact.
 
+## Generating slugs in factories
 
+Normally, I would generate a slug for an Eloquent model with an observer or an event. The creating event can verify if the slug field is filled, and if not, use the Str helper to add it to the current creation payload. Pretty cool.
 
+But, sometimes you can't do it like this. Perhaps it's a legacy project, events are turned off in your tests, or any number of reasons. So, when using Eloquent factories, you might find yourself doing something like this:
 
+![image](https://github.com/GrytsenkoAndrey/ed-laravel-clermont/assets/63291871/14db35b4-b323-4d86-93fc-b6a43527f153)
 
+I don't know about you, but I really don't want to do that. Seems repetitive - especially since I know I want the slug to be generated directly from the title field.
+
+Laravel provides a solution, though. When you pass a closure to a field definition in the factory declaration, you get access to the other attributes that are being used to create the model. So, let's update our factory definition to this:
+
+![image](https://github.com/GrytsenkoAndrey/ed-laravel-clermont/assets/63291871/fc1c9f03-ad21-4a64-b863-1c0166fa23ea)
+
+Now, our slug is generated automatically from our title. (If we want a different one, we can still pass it in using the create() method.)
+
+So, now, we can do this:
+
+![image](https://github.com/GrytsenkoAndrey/ed-laravel-clermont/assets/63291871/b842bcd5-a022-41ae-9b50-e46c71f4c4af)
 
 
 
