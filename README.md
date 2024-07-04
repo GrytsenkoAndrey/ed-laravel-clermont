@@ -4,6 +4,7 @@
 - [Test old()](#test-old-helper)
 - [Avoid unnecessary work when querying relationships](#unnecessary-work-when-querying-relationships)
 - [Generating slugs in factories](#generating-slugs-in-factories)
+- [Swagger | API documentation](#swagger-api-doc)
 
 
 ## Test mock partial
@@ -117,7 +118,31 @@ So, now, we can do this:
 ![image](https://github.com/GrytsenkoAndrey/ed-laravel-clermont/assets/63291871/b842bcd5-a022-41ae-9b50-e46c71f4c4af)
 
 
+## Swagger API doc
 
+Thinking back over the many Laravel projects I've joined over the years, I can only think of a small number of times when the project had a formal API specification to document API endpoints it provided. Most times, the API was only for internal use, whether that be for code in the front-end to call, or to support a separate mobile app.
+
+Today, I'd like to make the case that there is value in having an API specification even if your API is not used by any external applications.
+
+The first benefit I have found is around internal communication both between developers and also between a developer and the person specifying business requirements. When a developer reads new feature requirements, it is tempting to dive right into the implementation, but taking the time to first write up an API specification for any endpoints you need can really help you ensure you're building the right thing.
+
+For example, just thinking through the types of responses an endpoint can return can often guide you through some important decisions.
+
+- Can it return a 401 Unauthorized or a 403 Forbidden?
+- What are the rules around who can access this endpoint?
+- What authorization logic should be enforced?
+- Can it return a 422 Unprocessable Content error?
+- What is the validation logic for each piece of data a user can send in to that endpoint?
+- This field is a datetime, but what is the desired format?
+- This field is a string, but what is the maximum length? You're going to save it in a database, and the field probably has a max length in the schema, but there might be other business rules to enforce as well.
+
+I also like how writing an API specification forces some larger architectural questions, and gets you thinking early about how to handle versioning. Perhaps your application is multi-tenant. How should the current tenant be specified? Is it a header? A path value? Is it consistent between all your endpoints?
+
+For your endpoints that return collections, how are they paginated? How do you filter them? Can you specify how much detail you want for related records? All of these things are formalized in an API specification, and just taking the time to explicitly write it out can help your API be much more consistent in its design.
+
+Hopefully, I've convinced you it's worth further consideration. Tomorrow, I'll get more tactical and talk about how to actually get started building the specification.
+
+As you go, update your feature tests to add API spec validation. For Laravel apps, I like the [openapi-httpfoundation-testing package](https://click.convertkit-mail.com/8kuo65mppdtoh0mx5lrikhz778g99u3/n2hohqu3qnpo3pi0/aHR0cHM6Ly9naXRodWIuY29tL29zdGVlbC9vcGVuYXBpLWh0dHBmb3VuZGF0aW9uLXRlc3Rpbmc=). This will keep you honest that your spec is accurately describing the requests and responses in your application.
 
 
 
