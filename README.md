@@ -5,6 +5,7 @@
 - [Avoid unnecessary work when querying relationships](#unnecessary-work-when-querying-relationships)
 - [Generating slugs in factories](#generating-slugs-in-factories)
 - [Swagger | API documentation](#swagger-api-doc)
+- [echo print difference](#echo-print-difference)
 
 
 ## Test mock partial
@@ -143,6 +144,35 @@ For your endpoints that return collections, how are they paginated? How do you f
 Hopefully, I've convinced you it's worth further consideration. Tomorrow, I'll get more tactical and talk about how to actually get started building the specification.
 
 As you go, update your feature tests to add API spec validation. For Laravel apps, I like the [openapi-httpfoundation-testing package](https://click.convertkit-mail.com/8kuo65mppdtoh0mx5lrikhz778g99u3/n2hohqu3qnpo3pi0/aHR0cHM6Ly9naXRodWIuY29tL29zdGVlbC9vcGVuYXBpLWh0dHBmb3VuZGF0aW9uLXRlc3Rpbmc=). This will keep you honest that your spec is accurately describing the requests and responses in your application.
+
+
+## echo print difference
+
+Decades ago, it was common to use **echo** in PHP applications. In fact, we used it so much, we had a special short PHP tag <​?= to make it easier to type.
+
+Today, though, it's pretty rare to see echo in a modern Laravel application.
+
+One place it does get used is when streaming a download as your response.
+
+For example, streaming a CSV file might look like this:
+
+![image](https://github.com/user-attachments/assets/a4a0f7ba-0648-4483-bb26-74285877319d)
+
+With that setup out of the way, now to the question of the article: when might you need to use **print** instead of **echo**?
+
+What if you want to refactor that anonymous function to an arrow function? In this example, **echo** will throw a parse error.
+
+**Parse error: syntax error, unexpected token "echo"**
+
+Why? Because the arrow function body must be a single expression that returns a value. echo has a void return type and never returns a value.
+
+On the other hand, **print** always produces the return value **1**, so you can use it.
+
+This code works (and looks nicer, if you ask me):
+
+![image](https://github.com/user-attachments/assets/8aab4853-7dc7-4bd4-b41c-326890bce5b4)
+
+
 
 
 
